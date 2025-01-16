@@ -19,7 +19,8 @@ class CustomUser(AbstractUser):
     surname = models.CharField(verbose_name='Фамилия', max_length=150 ,null=True,default=None, blank=True)
     role = models.CharField(max_length=100, verbose_name='Роль', choices=ROLE_CHOICES, default='сотрудник', null=False)
     photo = models.ImageField(verbose_name='Фото', upload_to='worker_images', null=True, blank=True)
-
+    age = models.PositiveIntegerField(null=True, blank=True, verbose_name="Возраст")  # Добавлено поле возраста
+    position = models.CharField(max_length=255, null=True, blank=True, verbose_name="Должность")  # Добавлено поле должност
     objects = CustomUserManager()
 
     USERNAME_FIELD = "username"

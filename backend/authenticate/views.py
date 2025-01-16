@@ -42,7 +42,8 @@ class RegistrationAPIView(APIView):
         email = request.data['email']
         password = request.data['password']
         role = request.data['role']
-        
+        position = request.data['position']
+        age = request.data['age']
         if CustomUser.objects.filter(username=username).exists():
             return Response({'error': 'Пользователь с таким именем пользователя уже существует'},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -51,7 +52,7 @@ class RegistrationAPIView(APIView):
             return Response({'error': 'Пользователь с таким email уже существует'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            user = CustomUser.objects.create_user(username=username, email=email, password=password, role=role)
+            user = CustomUser.objects.create_user(username=username, email=email, password=password, role=role,age=age,position=position)
             user.save()
             response = Response()
             refresh = RefreshToken.for_user(user)

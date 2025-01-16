@@ -34,5 +34,7 @@ class UserListSerializer(serializers.ModelSerializer):
             "username",
             "role",
             "email",
+            "position",
+            "age"
         ]
 
