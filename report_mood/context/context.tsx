@@ -19,15 +19,12 @@ export const ContextProvider = ({ children }: ContextProviderProps) => {
 
   const checkAuth = async () => {
     const token = await SecureStore.getItemAsync('refresh_token');
-
+    console.log(token);
     if (token) {
       try {
         const { data } = await api.refreshToken({ refresh_token: token });
-
         await saveTokens(data);
         setAuth(true);
-        const { data: dataUser } = await api.getMe();
-        setUser(dataUser);
       } catch (error) {
         toast((error as { message: string }).message);
       }
@@ -45,6 +42,21 @@ export const ContextProvider = ({ children }: ContextProviderProps) => {
     setNavigationReady(true);
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const { data: dataUser } = await api.getMe();
+        setUser(dataUser);
+      } catch (error) {
+        toast((error as { message: string }).message);
+      }
+    };
+    auth && getUser();
+    return () => {
+      !auth && setUser({} as User);
+    };
+  }, [auth]);
 
   return <Provider value={{ auth, setAuth, user, navigationReady }}>{children}</Provider>;
 };

@@ -1,6 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { ActivityIndicator, Button, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Button, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { router } from 'expo-router';
 import { ThemedInput } from '@/components/ThemedInput';
@@ -35,50 +35,52 @@ const Signin = ({}: Props) => {
 
   const [loading, setLoading] = useState(false);
   return (
-    <ThemedView className="p-4">
-      <ThemedText className="text-2xl font-bold text-center mb-3">Авторизация</ThemedText>
-      <ThemedText className="mb-2 block">Имя пользователя</ThemedText>
-      <Controller
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <ThemedInput id="username" onChangeText={(value) => onChange(value)} value={value} />
-        )}
-        name="username"
-        rules={{ required: true }}
-      />
-      <ThemedText className="mb-2 block">Пароль</ThemedText>
-      <Controller
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <ThemedInput
-            id="password"
-            className="mb-2"
-            secureTextEntry
-            onChangeText={(value) => onChange(value)}
-            value={value}
-          />
-        )}
-        name="password"
-        rules={{ required: true }}
-      />
-      <TouchableOpacity className="mb-2">
-        <View>
-          {loading ? (
-            <ActivityIndicator animating={loading} />
-          ) : (
-            <Button
-              title="Войти"
-              onPress={handleSubmit(onSubmit)}
-              className=" text-white font-bold py-2 px-4 rounded"
+    <ScrollView>
+      <ThemedView className="p-4">
+        <ThemedText className="text-2xl font-bold text-center mb-3">Авторизация</ThemedText>
+        <ThemedText className="mb-2 block">Имя пользователя</ThemedText>
+        <Controller
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <ThemedInput id="username" onChangeText={(value) => onChange(value)} value={value} />
+          )}
+          name="username"
+          rules={{ required: true }}
+        />
+        <ThemedText className="mb-2 block">Пароль</ThemedText>
+        <Controller
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <ThemedInput
+              id="password"
+              className="mb-2"
+              secureTextEntry
+              onChangeText={(value) => onChange(value)}
+              value={value}
             />
           )}
-        </View>
-      </TouchableOpacity>
+          name="password"
+          rules={{ required: true }}
+        />
+        <TouchableOpacity className="mb-2">
+          <View>
+            {loading ? (
+              <ActivityIndicator animating={loading} />
+            ) : (
+              <Button
+                title="Войти"
+                onPress={handleSubmit(onSubmit)}
+                className=" text-white font-bold py-2 px-4 rounded"
+              />
+            )}
+          </View>
+        </TouchableOpacity>
 
-      <View>
-        <ThemedLink href={'/signup'}>Впервые здесь?</ThemedLink>
-      </View>
-    </ThemedView>
+        <View>
+          <ThemedLink href={'/signup'}>Впервые здесь?</ThemedLink>
+        </View>
+      </ThemedView>
+    </ScrollView>
   );
 };
 

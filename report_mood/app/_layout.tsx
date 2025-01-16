@@ -38,6 +38,8 @@ export default function RootLayout() {
         <ContextProvider>
           <SafeContainer>
             <Stack initialRouteName="(tabs)">
+              <Stack.Screen name="report/[id]" options={{ headerShown: false }} />
+              <Stack.Screen name="report/create" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="(auth)" options={{ headerShown: false }} />
               <Stack.Screen name="+not-found" />

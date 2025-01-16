@@ -35,14 +35,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="statistics"
-        options={{
-          title: 'statistics',
-          //@ts-ignore
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="bar-chart" color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',

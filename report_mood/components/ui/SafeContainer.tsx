@@ -8,9 +8,5 @@ interface Props {
 }
 
 export const SafeContainer: FC<Props> = ({ children }) => {
-  return (
-    <SafeAreaView className="h-full">
-      <ScrollView contentContainerStyle={{ height: '100%' }}>{children}</ScrollView>
-    </SafeAreaView>
-  );
+  return <SafeAreaView className="h-full">{children}</SafeAreaView>;
 };

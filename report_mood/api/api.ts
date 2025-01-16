@@ -1,5 +1,13 @@
 import axios from 'axios';
-import { SignInParams, SignUpParams, TokensResponse } from './types';
+import {
+  AssignPeopleToSurveyParams,
+  SignInParams,
+  SignUpParams,
+  Survey,
+  SurveyData,
+  SurveyParams,
+  TokensResponse,
+} from './types';
 import * as SecureStore from 'expo-secure-store';
 import { User } from '@/context/types';
 const apiUrl = 'http://192.168.3.15:8000/api/';
@@ -54,6 +62,27 @@ class Api {
   }
   async getMe() {
     return axiosInstance.get<User>('users/me/');
+  }
+  async getUsers() {
+    return axiosInstance.get<User[]>('users');
+  }
+  async getHRSurveys() {
+    return axiosInstance.get('surveys/hr_surveys');
+  }
+  async createSurvey(data: SurveyParams) {
+    return axiosInstance.post('surveys/', data);
+  }
+  async assignUsersToSurvey(data: AssignPeopleToSurveyParams[]) {
+    return axiosInstance.post('surveys/assign_users/', data);
+  }
+  async getUserSurveys() {
+    return axiosInstance.get<Survey[]>('surveys/assigned_to_me/');
+  }
+  async getSurveyById(id: string) {
+    return axiosInstance.get<Survey>(`surveys/${id}/`);
+  }
+  async completeSurvey({ id, answers }: SurveyData) {
+    return axiosInstance.post(`surveys/${id}/complete/`, { answers: answers });
   }
 }
 

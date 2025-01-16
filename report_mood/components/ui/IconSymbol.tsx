@@ -15,6 +15,7 @@ const MAPPING = {
   'chevron.right': 'chevron-right',
   person: 'person',
   'bar-chart': 'bar-chart',
+  "quiz":"quiz"
 } as Partial<
   Record<import('expo-symbols').SymbolViewProps['name'], React.ComponentProps<typeof MaterialIcons>['name']>
 >;
