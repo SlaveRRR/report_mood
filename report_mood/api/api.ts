@@ -16,8 +16,8 @@ export const axiosInstance = axios.create({
   baseURL: apiUrl,
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  const token = SecureStore.getItem('access_token');
+axiosInstance.interceptors.request.use(async (config) => {
+  const token = await SecureStore.getItemAsync('access_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -33,10 +33,12 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const response = await axios.get(`${apiUrl}token/refresh/`);
+        const token = await SecureStore.getItemAsync('refresh_token');
+        const response = await axios.post(`${apiUrl}token/refresh/`, token);
         SecureStore.setItem('access_token', response.data['access_token']);
         SecureStore.setItem('refresh_token', response.data['refresh_token']);
-        return await axiosInstance.request(originalRequest);
+        originalRequest.headers['Authorization'] = `Bearer ${response.data['access_token']}`;
+        return axiosInstance.request(originalRequest);
       } catch (error) {
         console.log(error);
       }

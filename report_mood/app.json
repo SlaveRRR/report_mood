@@ -1,11 +1,13 @@
 {
   "expo": {
-    "name": "report_mood",
-    "slug": "report_mood",
+    "name": "report mood",
+    "slug": "reportMood",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "report_mood",
+    "scheme": [
+      "mood"
+    ],
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -15,7 +17,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.slaver.reportMood"
     },
     "web": {
       "bundler": "metro",
@@ -39,10 +42,26 @@
           "configureAndroidBackup": true,
           "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "1.8.22"
+          }
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "6f3ba753-3c8d-4ef1-b7b9-978958281740"
+      }
     }
   }
 }

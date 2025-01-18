@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/useToast';
 import { signOut } from '@/utils';
 import { router } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
-import { ListRenderItem } from 'react-native';
+import { ListRenderItem, ScrollView } from 'react-native';
 import {
   ActivityIndicator,
   Alert,
@@ -71,70 +71,72 @@ export default function TabTwoScreen() {
   }
 
   return (
-    <ThemedView className="h-screen px-2">
-      <ThemedView className="flex pt-4 flex-row justify-between items-center">
-        <ThemedText className="mb-4" type="title">
-          Профиль
-        </ThemedText>
-        <Button
-          onPress={handleLogOut}
-          $backgroundDangerHeavy
-          backgroundColor={'transparent'}
-          label="Выйти"
-          className="px-9 py-2 border-2 border-red-500"
-        />
-      </ThemedView>
-      <ThemedView className="pt-10 flex flex-col gap-4 items-center px-1">
-        <Avatar
-          size={80}
-          imageStyle={{
-            objectFit: 'contain',
-          }}
-          source={{
-            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqGQ8dQ-LMiMmTEyBijR0FzpQHC7tH6qTE2g&s',
-          }}
-          label={'user'}
-        />
+    <ScrollView>
+      <ThemedView className="px-2 pb-2">
+        <ThemedView className="flex pt-4 flex-row justify-between items-center">
+          <ThemedText className="mb-4" type="title">
+            Профиль
+          </ThemedText>
+          <Button
+            onPress={handleLogOut}
+            $backgroundDangerHeavy
+            backgroundColor={'transparent'}
+            label="Выйти"
+            className="px-9 py-2 border-2 border-red-500"
+          />
+        </ThemedView>
+        <ThemedView className="pt-10 flex flex-col gap-4 items-center px-1">
+          <Avatar
+            size={80}
+            imageStyle={{
+              objectFit: 'contain',
+            }}
+            source={{
+              uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqGQ8dQ-LMiMmTEyBijR0FzpQHC7tH6qTE2g&s',
+            }}
+            label={'user'}
+          />
 
-        <ThemedText className="self-start" type="subtitle">
-          Пользователь: {user.username}
-        </ThemedText>
-        <ThemedText className="self-start" type="subtitle">
-          Позиция: {user.position}
-        </ThemedText>
-        <ThemedText className="self-start" type="subtitle">
-          Возраст: {user.age}
-        </ThemedText>
-        {user.role === 'HR' && (
-          <>
-            <ThemedText>Созданные опросы</ThemedText>
-            <GridList
-              data={surveys}
-              keyExtractor={(item) => item?.id?.toString() as string}
-              renderItem={({ item }): { item: Survey } => (
-                <TouchableOpacity activeOpacity={0.9} onPress={() => router.push(`/report/${item.id}`)}>
-                  <Card key={item.id} style={styles.card} enableShadow>
-                    <Text style={styles.title}>Название опроса: {item.title}</Text>
-                    <Text style={styles.text} text100 color="#888888">
-                      Количество прохождений: {item.total_completions}
-                    </Text>
-                    <Text style={item.total_completions > 0 ? styles.textAnalyticsSuccess : styles.textAnalyticsFail}>
-                      {item.total_completions > 0 ? 'Аналитика по опросу' : 'Аналитики пока нет('}
-                    </Text>
-                  </Card>
-                </TouchableOpacity>
-              )}
-              numColumns={2}
-              itemSpacing={10}
-            />
+          <ThemedText className="self-start" type="subtitle">
+            Пользователь: {user.username}
+          </ThemedText>
+          <ThemedText className="self-start" type="subtitle">
+            Позиция: {user.position}
+          </ThemedText>
+          <ThemedText className="self-start" type="subtitle">
+            Возраст: {user.age}
+          </ThemedText>
+          {user.role === 'HR' && (
+            <>
+              <ThemedText>Созданные опросы</ThemedText>
+              <GridList
+                data={surveys}
+                keyExtractor={(item) => item?.id?.toString() as string}
+                renderItem={({ item }): { item: Survey } => (
+                  <TouchableOpacity activeOpacity={0.9} onPress={() => router.push(`/report/${item.id}`)}>
+                    <Card key={item.id} style={styles.card} enableShadow>
+                      <Text style={styles.title}>Название опроса: {item.title}</Text>
+                      <Text style={styles.text} text100 color="#888888">
+                        Количество прохождений: {item.total_completions}
+                      </Text>
+                      <Text style={item.total_completions > 0 ? styles.textAnalyticsSuccess : styles.textAnalyticsFail}>
+                        {item.total_completions > 0 ? 'Аналитика по опросу' : 'Аналитики пока нет('}
+                      </Text>
+                    </Card>
+                  </TouchableOpacity>
+                )}
+                numColumns={2}
+                itemSpacing={10}
+              />
 
-            <Button size={'large'} hyperlink onPress={() => router.push('/report/create')} label="Создать опрос">
-              Создать опрос
-            </Button>
-          </>
-        )}
+              <Button size={'large'} hyperlink onPress={() => router.push('/report/create')} label="Создать опрос">
+                Создать опрос
+              </Button>
+            </>
+          )}
+        </ThemedView>
       </ThemedView>
-    </ThemedView>
+    </ScrollView>
   );
 }
 

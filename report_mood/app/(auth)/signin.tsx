@@ -22,10 +22,11 @@ const Signin = ({}: Props) => {
   const onSubmit = async (formData) => {
     setLoading(true);
     try {
-      signIn(formData);
-
-      router.replace('/(tabs)');
-      setAuth(true);
+      const status = await signIn(formData);
+      if (status === 200) {
+        router.replace('/(tabs)');
+        setAuth(true);
+      }
     } catch (error) {
       toast((error as { message: string }).message);
     } finally {

@@ -15,9 +15,10 @@ export const deleteTokens = async () => {
 
 export const signIn = async (formData: SignInParams) => {
   try {
-    const { data } = await api.signIn(formData);
+    const { data, status } = await api.signIn(formData);
 
     await saveTokens(data);
+    return status;
   } catch (error) {
     throw error;
   }
@@ -37,7 +38,6 @@ export const signOut = async () => {
   try {
     const token = await SecureStore.getItemAsync('refresh_token');
     await api.logout({ refresh_token: token as string });
-
     await deleteTokens();
   } catch (error) {
     throw error;

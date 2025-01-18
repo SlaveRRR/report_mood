@@ -19,14 +19,14 @@ export const ContextProvider = ({ children }: ContextProviderProps) => {
 
   const checkAuth = async () => {
     const token = await SecureStore.getItemAsync('refresh_token');
-    console.log(token);
+
     if (token) {
       try {
         const { data } = await api.refreshToken({ refresh_token: token });
         await saveTokens(data);
         setAuth(true);
       } catch (error) {
-        toast((error as { message: string }).message);
+        router.replace('/signin');
       }
     } else {
       router.replace('/signin');
