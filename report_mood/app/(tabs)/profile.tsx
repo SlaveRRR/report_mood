@@ -118,7 +118,9 @@ export default function TabTwoScreen() {
                     <Text style={styles.text} text100 color="#888888">
                       Количество прохождений: {item.total_completions}
                     </Text>
-                    {item.total_completions > 0 && <Text style={styles.textAnalytics}>Есть аналитика!</Text>}
+                    <Text style={item.total_completions > 0 ? styles.textAnalyticsSuccess : styles.textAnalyticsFail}>
+                      {item.total_completions > 0 ? 'Аналитика по опросу' : 'Аналитики пока нет('}
+                    </Text>
                   </Card>
                 </TouchableOpacity>
               )}
@@ -158,12 +160,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#888',
   },
-  textAnalytics: {
+  textAnalyticsSuccess: {
     marginTop: 10,
     padding: 5,
     borderRadius: 10,
     fontSize: 16,
     color: 'white',
     backgroundColor: 'green',
+  },
+  textAnalyticsFail: {
+    marginTop: 10,
+    padding: 5,
+    borderRadius: 10,
+    fontSize: 16,
+    color: 'white',
+    backgroundColor: 'red',
   },
 });

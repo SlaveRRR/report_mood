@@ -197,7 +197,7 @@ export default function CreateReportScreen() {
           <ThemedText style={styles.label}>Описание опроса</ThemedText>
           <TextInput
             style={styles.textArea}
-            placeholder="Опишите вопрос..."
+            placeholder="Дайте краткое описание..."
             placeholderTextColor="#888888"
             multiline
             value={description}

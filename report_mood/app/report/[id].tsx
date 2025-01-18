@@ -30,7 +30,7 @@ export default function CurrentReport() {
       }
     };
 
-    if (user && user?.role === 'HR') {
+    if (user) {
       getData();
     }
   }, [auth]);

@@ -1,13 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ScrollView, Dimensions } from 'react-native';
 import { BarChart, PieChart } from 'react-native-chart-kit';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { GestureHandlerRootView, TouchableOpacity } from 'react-native-gesture-handler';
+import { Picker } from '@react-native-picker/picker';
+import { Question, SurveyCompletion } from '@/api/types';
 
 const screenWidth = Dimensions.get('window').width;
 
-export const Statistics = ({ completions, questions }) => {
+interface StatisticsProps {
+  completions: SurveyCompletion[];
+  questions: Question[];
+}
+
+export const Statistics = ({ completions, questions }: StatisticsProps) => {
   const moodValue = useSharedValue(0);
+  const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null);
 
   useEffect(() => {
     moodValue.value = withTiming(1, { duration: 1000 });
@@ -31,7 +39,7 @@ export const Statistics = ({ completions, questions }) => {
   const averages = numericQuestions.reduce((acc, [question, value]) => {
     acc[question] = (acc[question] || []).concat(value);
     return acc;
-  }, {});
+  }, {} as Record<string, number[]>);
 
   const averageScores = Object.keys(averages).map((question, index) => ({
     question,
@@ -39,30 +47,32 @@ export const Statistics = ({ completions, questions }) => {
     id: uniqueQuestions.find((q) => q.question === question)?.id || index + 1,
   }));
 
-  const positiveNumericResponses = averageScores.filter((item) => item.average > 5).length;
-
   const textAnswers = completions.flatMap(({ answers }) =>
     Object.entries(answers).filter(([_, value]) => typeof value === 'string')
   );
 
   const textCounts = textAnswers.reduce((acc, [question, value]) => {
-    acc[question] = acc[question] || new Set();
-    acc[question].add(value);
+    acc[question] = acc[question] || {};
+    acc[question][value] = (acc[question][value] || 0) + 1;
     return acc;
-  }, {});
+  }, {} as Record<string, Record<string, number>>);
+
+  const positiveNumericResponses = averageScores.filter((item) => item.average > 5).length;
 
   const positiveTextResponses = textAnswers.filter(([_, value]) => value.toLowerCase() === 'да').length;
 
   const moodScore =
     (positiveNumericResponses / averageScores.length) * 0.7 + (positiveTextResponses / textAnswers.length) * 0.3;
 
-  const pieData = Object.keys(textCounts).map((key, index) => ({
-    name: key,
-    count: textCounts[key].size,
-    color: ['#f39c12', '#e74c3c', '#8e44ad', '#3498db', '#2ecc71'][index % 5],
-    legendFontColor: '#7F7F7F',
-    legendFontSize: 12,
-  }));
+  const pieData = selectedQuestion
+    ? Object.keys(textCounts[selectedQuestion] || {}).map((key, index) => ({
+        name: key,
+        count: textCounts[selectedQuestion][key],
+        color: ['#f39c12', '#e74c3c', '#8e44ad', '#3498db', '#2ecc71'][index % 5],
+        legendFontColor: '#7F7F7F',
+        legendFontSize: 12,
+      }))
+    : [];
 
   const barData = {
     labels: averageScores.map((item) => `${item.id}`),
@@ -108,24 +118,40 @@ export const Statistics = ({ completions, questions }) => {
         <ScrollView horizontal>
           <BarChart
             data={barData}
-            width={screenWidth * 1.5} // Увеличенная ширина
+            width={screenWidth * 1.5}
             height={220}
             chartConfig={chartConfig}
             style={styles.chart}
           />
         </ScrollView>
 
-        <Text style={styles.header}>Распределение текстовых ответов</Text>
-        <PieChart
-          data={pieData}
-          width={screenWidth - 20}
-          height={220}
-          chartConfig={chartConfig}
-          accessor="count"
-          backgroundColor="transparent"
-          paddingLeft="15"
-          style={styles.chart}
-        />
+        <Text style={styles.header}>Выберите вопрос для анализа текстовых ответов</Text>
+        <Picker
+          selectedValue={selectedQuestion}
+          onValueChange={(itemValue) => setSelectedQuestion(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Выберите вопрос" value={null} />
+          {Object.keys(textCounts).map((question, index) => (
+            <Picker.Item key={index} label={question} value={question} />
+          ))}
+        </Picker>
+
+        {selectedQuestion && (
+          <>
+            <Text style={styles.header}>Распределение текстовых ответов</Text>
+            <PieChart
+              data={pieData}
+              width={screenWidth - 20}
+              height={220}
+              chartConfig={chartConfig}
+              accessor="count"
+              backgroundColor="transparent"
+              paddingLeft="15"
+              style={styles.chart}
+            />
+          </>
+        )}
 
         <Text style={styles.header}>Таблица вопросов</Text>
         <FlatList
@@ -171,6 +197,15 @@ const styles = StyleSheet.create({
   chart: {
     marginVertical: 8,
     borderRadius: 16,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    marginVertical: 10,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: '#f9f9f9',
   },
   tableRow: {
     flexDirection: 'row',

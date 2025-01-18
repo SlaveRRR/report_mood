@@ -45,17 +45,19 @@ export const ContextProvider = ({ children }: ContextProviderProps) => {
 
   useEffect(() => {
     const getUser = async () => {
-      try {
-        const { data: dataUser } = await api.getMe();
-        setUser(dataUser);
-      } catch (error) {
-        toast((error as { message: string }).message);
+      if (auth) {
+        try {
+          const { data: dataUser } = await api.getMe();
+          setUser(dataUser);
+        } catch (error) {
+          toast((error as { message: string }).message);
+        }
+      } else {
+        setUser({} as User);
       }
     };
-    auth && getUser();
-    return () => {
-      !auth && setUser({} as User);
-    };
+
+    getUser(); // Вызов функции получения пользователя
   }, [auth]);
 
   return <Provider value={{ auth, setAuth, user, navigationReady }}>{children}</Provider>;
