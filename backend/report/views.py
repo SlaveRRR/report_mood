@@ -26,7 +26,7 @@ class SurveyViewSet(viewsets.ModelViewSet):
         # Получаем все опросы
         surveys = Survey.objects.all()
 
-        # Фильтруем их вручную на основе данных в assigned_users
+      
         assigned_surveys = []
         for survey in surveys:
             if any(user_item["id"] == user.id and user_item['is_complete'] == False for user_item in survey.assigned_users):
