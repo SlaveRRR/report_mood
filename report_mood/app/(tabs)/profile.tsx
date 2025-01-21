@@ -6,9 +6,10 @@ import { ThemedView } from '@/components/ThemedView';
 import { context } from '@/context';
 import { useToast } from '@/hooks/useToast';
 import { signOut } from '@/utils';
+import axios from 'axios';
 import { router } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
-import { ListRenderItem, ScrollView } from 'react-native';
+import { ListRenderItem, ScrollView, Image } from 'react-native';
 import {
   ActivityIndicator,
   Alert,
@@ -19,6 +20,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Avatar, Button, Card, GridList, Text } from 'react-native-ui-lib';
+
+const API_KEY = '6diZeeyWQ-b8C3k9w-9fbOedmgADULMxciJa1bgbPoE';
 
 export default function TabTwoScreen() {
   const { user, setAuth } = useContext(context);
@@ -61,6 +64,32 @@ export default function TabTwoScreen() {
       getData();
     }
   }, []);
+
+  const [images, setImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get('https://api.unsplash.com/photos/random', {
+          params: { count: surveys.length, query: 'office' },
+          headers: {
+            Authorization: `Client-ID ${API_KEY}`,
+          },
+        });
+        const urls = response.data.map((item: any) => item.urls.small);
+        console.log(urls);
+        setImages(urls);
+      } catch (error) {
+        console.error('Error fetching images:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (surveys) {
+      fetchImages();
+    }
+  }, [surveys]);
 
   if (isLoading) {
     return (
@@ -112,7 +141,7 @@ export default function TabTwoScreen() {
               <GridList
                 data={surveys}
                 keyExtractor={(item) => item?.id?.toString() as string}
-                renderItem={({ item }): { item: Survey } => (
+                renderItem={({ item, index }): { item: Survey } => (
                   <TouchableOpacity activeOpacity={0.9} onPress={() => router.push(`/report/${item.id}`)}>
                     <Card key={item.id} style={styles.card} enableShadow>
                       <Text style={styles.title}>Название опроса: {item.title}</Text>
@@ -122,6 +151,9 @@ export default function TabTwoScreen() {
                       <Text style={item.total_completions > 0 ? styles.textAnalyticsSuccess : styles.textAnalyticsFail}>
                         {item.total_completions > 0 ? 'Аналитика по опросу' : 'Аналитики пока нет('}
                       </Text>
+                      {images[index] && (
+                        <Image source={{ uri: images[index] }} style={styles.image} resizeMode="cover" />
+                      )}
                     </Card>
                   </TouchableOpacity>
                 )}
@@ -161,6 +193,12 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     color: '#888',
+  },
+  image: {
+    marginTop: 20,
+    width: '100%',
+    height: 120,
+    borderRadius: 8,
   },
   textAnalyticsSuccess: {
     marginTop: 10,

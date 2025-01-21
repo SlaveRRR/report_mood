@@ -15,10 +15,10 @@ import { signIn } from '@/utils';
 interface Props {}
 
 const Signin = ({}: Props) => {
-  const { handleSubmit, control } = useForm();
   const { toast } = useToast();
   const { setAuth } = useContext(context);
 
+  const { handleSubmit, control } = useForm();
   const onSubmit = async (formData) => {
     setLoading(true);
     try {
