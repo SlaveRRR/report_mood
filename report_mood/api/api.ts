@@ -9,8 +9,10 @@ import {
   TokensResponse,
 } from './types';
 import * as SecureStore from 'expo-secure-store';
-import { User } from '@/context/types';
-const apiUrl = 'http://192.168.3.15:8000/api/';
+import { User } from './types';
+
+const ip = '172.23.49.60';
+const apiUrl = `http://${ip}:8000/api/`;
 
 export const axiosInstance = axios.create({
   baseURL: apiUrl,

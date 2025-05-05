@@ -9,7 +9,7 @@ import { signOut } from '@/utils';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
-import { ListRenderItem, ScrollView, Image } from 'react-native';
+import { ListRenderItem, ScrollView, Image,View } from 'react-native';
 import {
   ActivityIndicator,
   Alert,
@@ -114,7 +114,7 @@ export default function TabTwoScreen() {
             className="px-9 py-2 border-2 border-red-500"
           />
         </ThemedView>
-        <ThemedView className="pt-10 flex flex-col gap-4 items-center px-1">
+        <ThemedView   className="pt-10 flex flex-col gap-4 items-center px-1">
           <Avatar
             size={80}
             imageStyle={{
@@ -139,10 +139,16 @@ export default function TabTwoScreen() {
             <>
               <ThemedText>Созданные опросы</ThemedText>
               <GridList
+                scrollEnabled={false}
                 data={surveys}
                 keyExtractor={(item) => item?.id?.toString() as string}
                 renderItem={({ item, index }): { item: Survey } => (
-                  <TouchableOpacity activeOpacity={0.9} onPress={() => router.push(`/report/${item.id}`)}>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => {
+                      item.total_completions > 0 && router.push(`/report/${item.id}`);
+                    }}
+                  >
                     <Card key={item.id} style={styles.card} enableShadow>
                       <Text style={styles.title}>Название опроса: {item.title}</Text>
                       <Text style={styles.text} text100 color="#888888">
@@ -161,9 +167,7 @@ export default function TabTwoScreen() {
                 itemSpacing={10}
               />
 
-              <Button size={'large'} hyperlink onPress={() => router.push('/report/create')} label="Создать опрос">
-                Создать опрос
-              </Button>
+              <Button size={'large'} hyperlink onPress={() => router.push('/report/create')} label="Создать опрос" />
             </>
           )}
         </ThemedView>

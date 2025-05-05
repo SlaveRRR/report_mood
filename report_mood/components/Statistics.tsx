@@ -140,6 +140,7 @@ export const Statistics = ({ completions, questions }: StatisticsProps) => {
         {selectedQuestion && (
           <>
             <Text style={styles.header}>Распределение текстовых ответов</Text>
+            <Text style={styles.selectedQuestion}>{selectedQuestion}</Text>
             <PieChart
               data={pieData}
               width={screenWidth - 20}
@@ -157,6 +158,7 @@ export const Statistics = ({ completions, questions }: StatisticsProps) => {
         <FlatList
           data={questions}
           keyExtractor={(item, index) => `item_${index}`}
+          scrollEnabled={false}
           renderItem={({ item }) => (
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.cellId]}>
@@ -193,6 +195,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     textAlign: 'center',
     color: '#333333',
+  },
+  selectedQuestion: {
+    textAlign: 'center',
   },
   chart: {
     marginVertical: 8,

@@ -104,6 +104,9 @@ export default function CreateReportScreen() {
     if (!title.trim() || !description.trim()) {
       return Alert.alert('У опроса должно быть название и описание.');
     }
+    if (selectedPeople.length === 0) {
+      return Alert.alert('Вы должны назначить людей для прохождения опроса.');
+    }
     setIsLoading(true);
     try {
       const response = await api.createSurvey({
